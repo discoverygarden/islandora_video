@@ -54,5 +54,5 @@ function islandora_video_update_7100(&$sandbox) {
  * Deletes the unused legacy variable islandora_video_retain_original.
  */
 function islandora_video_update_7101(&$sandbox) {
-  variable_del('islandora_video_retain_original');
+  \Drupal::config('islandora_video.settings')->clear('islandora_video_retain_original')->save();
 }

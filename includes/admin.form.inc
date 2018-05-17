@@ -47,13 +47,13 @@ function islandora_video_admin(array $form, array &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Play OBJ datastream in viewer'),
     '#description' => $description,
-    '#default_value' => variable_get('islandora_video_play_obj', TRUE),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_play_obj'),
   );
   $form['playback']['islandora_video_max_obj_size'] = array(
     '#type' => 'textfield',
     '#title' => t('Maximum file size for playing OBJ (in MB)'),
     '#description' => t("Set a maximum size (in megabytes) for sending the OBJ datastream to the player."),
-    '#default_value' => variable_get('islandora_video_max_obj_size', '500'),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_max_obj_size'),
     '#states' => array(
       'visible' => array(
         ':input[name="islandora_video_play_obj"]' => array('checked' => TRUE),
@@ -71,7 +71,7 @@ function islandora_video_admin(array $form, array &$form_state) {
   $form['derivatives']['islandora_video_ffmpeg_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to FFmpeg'),
-    '#default_value' => variable_get('islandora_video_ffmpeg_path', 'ffmpeg'),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg_path'),
     '#description' => t('Path to the FFmpeg binary. For example: <kbd>/usr/local/bin/ffmpeg</kbd>  . Used if creating TN, MP4, or MKV derivatives.'),
     '#required' => TRUE,
   );
@@ -80,23 +80,23 @@ function islandora_video_admin(array $form, array &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Create TN datastream locally'),
     '#description' => t('If On (default), the Drupal server will use FFmpeg to create a thumbnail screenshot from the video, or fall back to a default thumbnail. If Off, no thumbnail will be created.'),
-    '#default_value' => variable_get('islandora_video_make_thumbnail_locally', TRUE),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_make_thumbnail_locally'),
   );
   // MP4 derivatives.
   $form['derivatives']['islandora_video_make_mp4_locally'] = array(
     '#type' => 'checkbox',
     '#title' => t('Create MP4 datastream locally'),
     '#description' => t('If On (default), the Drupal server will use FFmpeg to create a web-friendly mp4 version of the uploaded file. Disable if another server creates derivatives, or if you intend to play the uploaded files directly (see Playback options above). This feature requires a valid MP4 audio codec.'),
-    '#default_value' => variable_get('islandora_video_make_mp4_locally', TRUE),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_make_mp4_locally'),
   );
   $form['derivatives']['islandora_video_mp4_audio_codec'] = array(
     '#type' => 'textfield',
     '#title' => t('MP4 audio codec'),
     '#description' => t("Defaults to libfaac, a non-free encoder. FFmpeg must have been compiled from source with that encoder enabled. See !FFMPEG for more info.",
       array(
-        '!FFMPEG' => l(t("FFmpeg's AAC encoding guide"), 'https://trac.ffmpeg.org/wiki/Encode/AAC'),
+        '!FFMPEG' => \Drupal::l(t("FFmpeg's AAC encoding guide"), \Drupal\Core\Url::fromUri('https://trac.ffmpeg.org/wiki/Encode/AAC')),
       )),
-    '#default_value' => variable_get('islandora_video_mp4_audio_codec', 'libfaac'),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_mp4_audio_codec'),
     '#states' => array(
       'visible' => array(
         ':input[name="islandora_video_make_mp4_locally"]' => array('checked' => TRUE),
@@ -108,20 +108,20 @@ function islandora_video_admin(array $form, array &$form_state) {
     '#type' => 'checkbox',
     '#title' => t('Create MKV datastream locally'),
     '#description' => t('If On (default), the Drupal server will use FFmpeg to create a Matroska container derivative. This may be useful for archival purposes, but is not used by Islandora.'),
-    '#default_value' => variable_get('islandora_video_make_archive', TRUE),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_make_archive'),
   );
   // OGG/Theora derivatives.
   $form['derivatives']['islandora_video_make_ogg_locally'] = array(
     '#type' => 'checkbox',
     '#title' => t('Create OGG datastream locally'),
     '#description' => t("If On (default is Off), the Drupal server will use ffmpeg2theora to create an Ogg Theora container derivative. This is a legacy option only, as this datastream is no longer used by Islandora."),
-    '#default_value' => variable_get('islandora_video_make_ogg_locally', FALSE),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_make_ogg_locally'),
   );
   $form['derivatives']['islandora_video_ffmpeg2theora_path'] = array(
     '#type' => 'textfield',
     '#title' => t('Path to ffmpeg2theora executable'),
     '#description' => t('Path to Theora conversion program on your server'),
-    '#default_value' => variable_get('islandora_video_ffmpeg2theora_path', 'ffmpeg2theora'),
+    '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg2theora_path'),
     '#states' => array(
       'visible' => array(
         ':input[name="islandora_video_make_ogg_locally"]' => array('checked' => TRUE),
@@ -139,15 +139,15 @@ function islandora_video_admin_submit($form, &$form_state) {
   $op = $form_state['clicked_button']['#id'];
   switch ($op) {
     case 'edit-reset':
-      variable_del('islandora_video_viewers');
-      variable_del('islandora_video_ffmpeg_path');
-      variable_del('islandora_video_make_archive');
-      variable_del('islandora_video_make_mp4_locally');
-      variable_del('islandora_video_make_ogg_locally');
-      variable_del('islandora_video_ffmpeg2theora_path');
-      variable_del('islandora_video_mp4_audio_codec');
-      variable_del('islandora_video_play_obj');
-      variable_del('islandora_video_max_obj_size');
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_viewers')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_ffmpeg_path')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_make_archive')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_make_mp4_locally')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_make_ogg_locally')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_ffmpeg2theora_path')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_mp4_audio_codec')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_play_obj')->save();
+      \Drupal::config('islandora_video.settings')->clear('islandora_video_max_obj_size')->save();
       break;
   }
 }
@@ -176,7 +176,7 @@ function islandora_video_admin_validate($form, &$form_state) {
     }
 
     // Test that FFMPEG path is valid.
-    $ffmpeg = ($form_state['values']['islandora_video_ffmpeg_path'] !== variable_get('islandora_video_ffmpeg_path', 'ffmpeg') ? $form_state['values']['islandora_video_ffmpeg_path'] : variable_get('islandora_video_ffmpeg_path', 'ffmpeg'));
+    $ffmpeg = ($form_state['values']['islandora_video_ffmpeg_path'] !== \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg_path') ? $form_state['values']['islandora_video_ffmpeg_path'] : \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg_path'));
     if (preg_match('/[^0-9a-zA-Z\\/\\\\_-]/', $ffmpeg) === 1) {
       form_set_error('islandora_video_ffmpeg_path', "The value entered for FFmpeg path contains forbidden characters.");
       return;

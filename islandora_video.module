@@ -113,7 +113,16 @@ function islandora_video_xml_form_builder_form_associations() {
  * Implements hook_CMODEL_PID_islandora_view_object().
  */
 function islandora_video_islandora_sp_videoCModel_islandora_view_object($object, $page_number, $page_size) {
-  $output = theme('islandora_video', array('object' => $object));
+  // @FIXME
+// theme() has been renamed to _theme() and should NEVER be called directly.
+// Calling _theme() directly can alter the expected output and potentially
+// introduce security issues (see https://www.drupal.org/node/2195739). You
+// should use renderable arrays instead.
+// 
+// 
+// @see https://www.drupal.org/node/2195739
+// $output = theme('islandora_video', array('object' => $object));
+
   return array('' => $output);
 }
 
@@ -137,7 +146,7 @@ function islandora_video_islandora_sp_videoCModel_islandora_ingest_steps() {
  */
 function islandora_video_islandora_sp_videoCModel_islandora_derivative() {
   $derivatives = array();
-  if (variable_get('islandora_video_make_thumbnail_locally', TRUE)) {
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_thumbnail_locally')) {
     $derivatives[] = array(
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'TN',
@@ -148,7 +157,7 @@ function islandora_video_islandora_sp_videoCModel_islandora_derivative() {
       'file' => drupal_get_path('module', 'islandora_video') . '/includes/derivatives.inc',
     );
   }
-  if (variable_get('islandora_video_make_mp4_locally', TRUE)) {
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_mp4_locally')) {
     $derivatives[] = array(
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'MP4',
@@ -159,7 +168,7 @@ function islandora_video_islandora_sp_videoCModel_islandora_derivative() {
       'file' => drupal_get_path('module', 'islandora_video') . '/includes/derivatives.inc',
     );
   }
-  if (variable_get('islandora_video_make_ogg_locally', FALSE)) {
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_ogg_locally')) {
     $derivatives[] = array(
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'OGG',
@@ -170,7 +179,7 @@ function islandora_video_islandora_sp_videoCModel_islandora_derivative() {
       'file' => drupal_get_path('module', 'islandora_video') . '/includes/derivatives.inc',
     );
   }
-  if (variable_get('islandora_video_make_archive', TRUE)) {
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_archive')) {
     $derivatives[] = array(
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'MKV',
