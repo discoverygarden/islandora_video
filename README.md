@@ -1,4 +1,4 @@
-# Video Solution Pack [![Build Status](https://travis-ci.org/Islandora/islandora_solution_pack_video.png?branch=7.x)](https://travis-ci.org/Islandora/islandora_solution_pack_video)
+# Video Solution Pack
 
 ## Introduction
 
