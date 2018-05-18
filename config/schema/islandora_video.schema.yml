@@ -1,0 +1,20 @@
+islandora_video.settings:
+  type: mapping
+  label: Settings
+  mapping:
+    islandora_video_ffmpeg_path:
+      type: string
+    islandora_video_make_archive:
+      type: boolean
+    islandora_video_make_mp4_locally:
+      type: boolean
+    islandora_video_make_ogg_locally:
+      type: boolean
+    islandora_video_ffmpeg2theora_path:
+      type: string
+    islandora_video_mp4_audio_codec:
+      type: string
+    islandora_video_play_obj:
+      type: boolean
+    islandora_video_max_obj_size:
+      type: integer

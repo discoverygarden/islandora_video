@@ -1,0 +1,8 @@
+islandora_video_ffmpeg_path: 'ffmpeg'
+islandora_video_make_archive: true
+islandora_video_make_mp4_locally: true
+islandora_video_make_ogg_locally: false
+islandora_video_ffmpeg2theora_path: 'ffmpeg2theora'
+islandora_video_mp4_audio_codec: 'libfaac'
+islandora_video_play_obj: true
+islandora_video_max_obj_size: 500

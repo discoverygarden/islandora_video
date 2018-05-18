@@ -6,7 +6,7 @@ use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
 
-class IslandoraVideoAdmin extends ConfigFormBase {
+class Admin extends ConfigFormBase {
 
   /**
    * {@inheritdoc}
@@ -120,8 +120,8 @@ class IslandoraVideoAdmin extends ConfigFormBase {
     $form['derivatives']['islandora_video_mp4_audio_codec'] = [
       '#type' => 'textfield',
       '#title' => t('MP4 audio codec'),
-      '#description' => t("Defaults to libfaac, a non-free encoder. FFmpeg must have been compiled from source with that encoder enabled. See !FFMPEG for more info.", [
-        '!FFMPEG' => \Drupal::l(t("FFmpeg's AAC encoding guide"), \Drupal\Core\Url::fromUri('https://trac.ffmpeg.org/wiki/Encode/AAC'))
+      '#description' => t("Defaults to libfaac, a non-free encoder. FFmpeg must have been compiled from source with that encoder enabled. See @FFMPEG for more info.", [
+        '@FFMPEG' => \Drupal::l(t("FFmpeg's AAC encoding guide"), \Drupal\Core\Url::fromUri('https://trac.ffmpeg.org/wiki/Encode/AAC'))
         ]),
       '#default_value' => \Drupal::config('islandora_video.settings')->get('islandora_video_mp4_audio_codec'),
       '#states' => [
