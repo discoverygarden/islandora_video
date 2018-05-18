@@ -1,10 +1,5 @@
 <?php
 
-/**
- * @file
- * Contains \Drupal\islandora_video\Form\IslandoraVideoAdmin.
- */
-
 namespace Drupal\islandora_video\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
@@ -240,4 +235,3 @@ class IslandoraVideoAdmin extends ConfigFormBase {
   }
 
 }
-?>
