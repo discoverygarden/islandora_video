@@ -2,9 +2,11 @@
 
 ## Introduction
 
-A framework for ingesting and retrieving video objects in Islandora. Currently supports videos with the following extensions:
-`mp4`, `mov`, `qt`, `m4v`, `avi`, `mkv`, `ogg`. A viewer module, such as
-[Islandora Video.js](https://github.com/islandora/islandora_videojs), may be enabled to play compatible videos.
+A framework for ingesting and retrieving video objects in Islandora. Currently
+supports videos with the following extensions: `mp4`, `mov`, `qt`, `m4v`,
+`avi`, `mkv`, `ogg`. A viewer module, such as [Islandora
+Video.js](https://github.com/islandora/islandora_videojs), may be enabled to
+play compatible videos.
 
 ## Requirements
 
@@ -32,7 +34,12 @@ Compilation guides:
 * [Ubuntu](https://trac.ffmpeg.org/wiki/CompilationGuide/Ubuntu)
 * [CentOS](https://trac.ffmpeg.org/wiki/CompilationGuide/Centos)
 
-Sample compile flags: ` --prefix=/usr/local/stow/ffmpeg-1.1.4 --enable-gpl --enable-version3 --enable-nonfree --enable-postproc --enable-libopencore-amrnb --enable-libopencore-amrwb --enable-libdc1394 --enable-libfaac --enable-libgsm --enable-libmp3lame --enable-libopenjpeg --enable-libschroedinger --enable-libspeex --enable-libtheora --enable-libvorbis --enable-libvpx --enable-libx264 --enable-libxvid --enable-libfdk-aac`
+Sample compile flags: ` --prefix=/usr/local/stow/ffmpeg-1.1.4 --enable-gpl
+--enable-version3 --enable-nonfree --enable-postproc --enable-libopencore-amrnb
+--enable-libopencore-amrwb --enable-libdc1394 --enable-libfaac --enable-libgsm
+--enable-libmp3lame --enable-libopenjpeg --enable-libschroedinger
+--enable-libspeex --enable-libtheora --enable-libvorbis --enable-libvpx
+--enable-libx264 --enable-libxvid --enable-libfdk-aac`
 
 ## Installation
 
@@ -42,7 +49,9 @@ Install as
 ## Configuration
 
 Configure this module, including which (if any) derivatives to create, and
-which (if any) viewer to use at Configuration » Islandora » Solution Pack Configuration » Video Solution Pack (admin/config/islandora/solution_pack_config/video).
+which (if any) viewer to use at Configuration » Islandora » Solution Pack
+Configuration » Video Solution Pack
+(admin/config/islandora/solution_pack_config/video).
 
 ![Configuration](https://user-images.githubusercontent.com/1943338/36505613-7a3df7a2-172a-11e8-8ad0-0c26859ccebc.png)
 

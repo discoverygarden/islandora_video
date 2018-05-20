@@ -17,8 +17,8 @@ function template_preprocess_islandora_video(array &$variables) {
   // @FIXME
 // The Assets API has totally changed. CSS, JavaScript, and libraries are now
 // attached directly to render arrays using the #attached property.
-// 
-// 
+//
+//
 // @see https://www.drupal.org/node/2169605
 // @see https://www.drupal.org/node/2408597
 // drupal_add_js('misc/form.js');
@@ -26,8 +26,8 @@ function template_preprocess_islandora_video(array &$variables) {
   // @FIXME
 // The Assets API has totally changed. CSS, JavaScript, and libraries are now
 // attached directly to render arrays using the #attached property.
-// 
-// 
+//
+//
 // @see https://www.drupal.org/node/2169605
 // @see https://www.drupal.org/node/2408597
 // drupal_add_js('misc/collapse.js');
@@ -43,10 +43,10 @@ function template_preprocess_islandora_video(array &$variables) {
     }
   }
   catch (Exception $e) {
-    drupal_set_message(t('Error retriveing object %s %t', array('%s' => $object->id, '%t' => $e->getMessage())), 'error', FALSE);
+    drupal_set_message(t('Error retriveing object %s %t', ['%s' => $object->id, '%t' => $e->getMessage()]), 'error', FALSE);
   }
   $variables['islandora_dublin_core'] = isset($dc_object) ? $dc_object : NULL;
-  $variables['dc_array'] = isset($dc_object) ? $dc_object->asArray() : array();
+  $variables['dc_array'] = isset($dc_object) ? $dc_object->asArray() : [];
   $variables['islandora_object_label'] = $object->label;
   $variables['theme_hook_suggestions'][] = 'islandora_video__' . str_replace(':', '_', $object->id);
   $variables['parent_collections'] = islandora_get_parents_from_rels_ext($object);
@@ -68,19 +68,19 @@ function template_preprocess_islandora_video(array &$variables) {
 
   $mime = 'video/mp4';
 
-  $video_params = array(
+  $video_params = [
     'pid' => $object->id,
-  );
+  ];
   // Video player.
   if (isset($object[$viewer_dsid]) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object[$viewer_dsid])) {
     // @FIXME
 // url() expects a route name or an external URI.
 // $video_url = url("islandora/object/{$object->id}/datastream/$viewer_dsid/view");
 
-    $video_params += array(
+    $video_params += [
       'mime' => $mime,
       'url' => $video_url,
-    );
+    ];
   }
   // Thumbnail.
   if (isset($object['TN']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['TN'])) {
@@ -100,5 +100,5 @@ function template_preprocess_islandora_video(array &$variables) {
   else {
     $variables['islandora_content'] = NULL;
   }
-  return array('' => $viewer);
+  return ['' => $viewer];
 }

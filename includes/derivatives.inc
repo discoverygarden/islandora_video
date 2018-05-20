@@ -37,17 +37,17 @@ function islandora_video_create_mp4(AbstractObject $object, $force = FALSE) {
       return islandora_video_add_datastream($object, 'MP4', $out_file);
     }
     else {
-      return array(
+      return [
         'success' => FALSE,
-        'messages' => array(
-          array(
+        'messages' => [
+          [
             'message' => t('Ffmpeg encoding failed for object @pid - MP4 creation was skipped.'),
-            'message_sub' => array('@pid' => $object->id),
+            'message_sub' => ['@pid' => $object->id],
             'type' => 'watchdog',
             'severity' => WATCHDOG_ERROR,
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
     }
   }
 }
@@ -83,17 +83,17 @@ function islandora_video_create_ogg(AbstractObject $object, $force = FALSE) {
       return islandora_video_add_datastream($object, 'OGG', $out_file);
     }
     else {
-      return array(
+      return [
         'success' => FALSE,
-        'messages' => array(
-          array(
+        'messages' => [
+          [
             'message' => t('Ffmpeg2theora encoding failed for object @pid - OGG creation was skipped.'),
-            'message_sub' => array('@pid' => $object->id),
+            'message_sub' => ['@pid' => $object->id],
             'type' => 'watchdog',
             'severity' => WATCHDOG_ERROR,
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
     }
   }
 }
@@ -129,17 +129,17 @@ function islandora_video_create_mkv(AbstractObject $object, $force = FALSE) {
       return islandora_video_add_datastream($object, 'MKV', $out_file);
     }
     else {
-      return array(
+      return [
         'success' => FALSE,
-        'messages' => array(
-          array(
+        'messages' => [
+          [
             'message' => t('Ffmpeg encoding failed for object @pid - MKV creation was skipped.'),
-            'message_sub' => array('@pid' => $object->id),
+            'message_sub' => ['@pid' => $object->id],
             'type' => 'watchdog',
             'severity' => WATCHDOG_ERROR,
-          ),
-        ),
-      );
+          ],
+        ],
+      ];
     }
   }
 }
@@ -172,7 +172,7 @@ function islandora_video_create_thumbnail(AbstractObject $object, $force = FALSE
 
     $dur_match = FALSE;
     $duration = '';
-    foreach ($time_output as $key => $value) {
+    foreach ($time_output as $value) {
       preg_match('/Duration: (.*), start/', $value, $time_match);
       if (count($time_match)) {
         $dur_match = TRUE;
@@ -227,7 +227,7 @@ function islandora_video_create_thumbnail(AbstractObject $object, $force = FALSE
  *
  * @see hook_islandora_derivative()
  */
-function islandora_video_add_datastream($object, $datastream_id, $file_uri, $delete_file = TRUE) {
+function islandora_video_add_datastream(AbstractObject $object, $datastream_id, $file_uri, $delete_file = TRUE) {
   try {
     $ingest = !isset($object[$datastream_id]);
     $mime_detector = new MimeDetect();
@@ -249,37 +249,37 @@ function islandora_video_add_datastream($object, $datastream_id, $file_uri, $del
     if ($delete_file && file_exists($file_uri)) {
       file_unmanaged_delete($file_uri);
     }
-    return array(
+    return [
       'success' => TRUE,
-      'messages' => array(
-        array(
+      'messages' => [
+        [
           'message' => t('Created @dsid derivative for OBJ (@pid).'),
-          'message_sub' => array(
+          'message_sub' => [
             '@dsid' => $datastream_id,
             '@pid' => $object->id,
-          ),
+          ],
           'type' => 'dsm',
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
   catch (exception $e) {
-    return array(
+    return [
       'success' => FALSE,
-      'messages' => array(
-        array(
+      'messages' => [
+        [
           'message' => t('Failed to add @dsid datastream for @pid. Error message: "@message" with trace: @stack'),
-          'message_sub' => array(
+          'message_sub' => [
             '@dsid' => $datastream_id,
             '@pid' => $object->id,
             '@message' => $e->getMessage(),
             '@stack' => $e->getTraceAsString(),
-          ),
+          ],
           'type' => 'watchdog',
           'severity' => WATCHDOG_ERROR,
-        ),
-      ),
-    );
+        ],
+      ],
+    ];
   }
 }
 
@@ -289,7 +289,7 @@ function islandora_video_add_datastream($object, $datastream_id, $file_uri, $del
  * @param AbstractObject $object
  *   An AbstractObject representing an object within Fedora.
  *
- * @return array|stdClass
+ * @return array|object
  *   FALSE when the object doesn't have the OBJ, an array otherwise.
  */
 function islandora_video_copy_obj_datastream(AbstractObject $object) {
@@ -310,11 +310,11 @@ function islandora_video_copy_obj_datastream(AbstractObject $object) {
   $file->status = 0;
   $object['OBJ']->getContent($file_uri);
   $original_file = file_save($file);
-  return array(
+  return [
     'file' => $original_file,
     'extension' => $ext,
     'filename' => $file_name,
-  );
+  ];
 }
 
 /**
@@ -329,15 +329,15 @@ function islandora_video_copy_obj_datastream(AbstractObject $object) {
  * @see hook_islandora_derivative()
  */
 function islandora_video_no_obj_datastream($pid) {
-  return array(
+  return [
     'success' => FALSE,
-    'messages' => array(
-      array(
+    'messages' => [
+      [
         'message' => t('Could not create video derivatives for %s. No video file was uploaded.'),
-        'message_sub' => array('%s' => $pid),
+        'message_sub' => ['%s' => $pid],
         'type' => 'watchdog',
         'severity' => WATCHDOG_ERROR,
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 }
