@@ -5,6 +5,10 @@
  * Create derivatives for video content.
  */
 
+use Drupal\Core\Logger\RfcLogLevel;
+
+use Drupal\islandora\MimeDetect;
+
 /**
  * This function will create an MP4 file for upload.
  *
@@ -44,7 +48,7 @@ function islandora_video_create_mp4(AbstractObject $object, $force = FALSE) {
             'message' => t('Ffmpeg encoding failed for object @pid - MP4 creation was skipped.'),
             'message_sub' => ['@pid' => $object->id],
             'type' => 'watchdog',
-            'severity' => WATCHDOG_ERROR,
+            'severity' => RfcLogLevel::ERROR,
           ],
         ],
       ];
@@ -90,7 +94,7 @@ function islandora_video_create_ogg(AbstractObject $object, $force = FALSE) {
             'message' => t('Ffmpeg2theora encoding failed for object @pid - OGG creation was skipped.'),
             'message_sub' => ['@pid' => $object->id],
             'type' => 'watchdog',
-            'severity' => WATCHDOG_ERROR,
+            'severity' => RfcLogLevel::ERROR,
           ],
         ],
       ];
@@ -136,7 +140,7 @@ function islandora_video_create_mkv(AbstractObject $object, $force = FALSE) {
             'message' => t('Ffmpeg encoding failed for object @pid - MKV creation was skipped.'),
             'message_sub' => ['@pid' => $object->id],
             'type' => 'watchdog',
-            'severity' => WATCHDOG_ERROR,
+            'severity' => RfcLogLevel::ERROR,
           ],
         ],
       ];
@@ -276,7 +280,7 @@ function islandora_video_add_datastream(AbstractObject $object, $datastream_id, 
             '@stack' => $e->getTraceAsString(),
           ],
           'type' => 'watchdog',
-          'severity' => WATCHDOG_ERROR,
+          'severity' => RfcLogLevel::ERROR,
         ],
       ],
     ];
@@ -336,7 +340,7 @@ function islandora_video_no_obj_datastream($pid) {
         'message' => t('Could not create video derivatives for %s. No video file was uploaded.'),
         'message_sub' => ['%s' => $pid],
         'type' => 'watchdog',
-        'severity' => WATCHDOG_ERROR,
+        'severity' => RfcLogLevel::ERROR,
       ],
     ],
   ];
