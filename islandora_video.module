@@ -11,7 +11,6 @@
 function islandora_video_theme($existing, $type, $theme, $path) {
   return [
     'islandora_video' => [
-      'template' => 'theme/islandora-video',
       'file' => 'theme/theme.inc',
       'pattern' => 'islandora_video__',
       'variables' => ['object' => NULL],
