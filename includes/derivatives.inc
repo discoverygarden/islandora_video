@@ -29,7 +29,7 @@ function islandora_video_create_mp4(AbstractObject $object, $force = FALSE) {
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri());
     $out_file = $archival_path . '.mp4';
     $audio_codec = \Drupal::config('islandora_video.settings')->get('islandora_video_mp4_audio_codec');
 
@@ -76,7 +76,7 @@ function islandora_video_create_ogg(AbstractObject $object, $force = FALSE) {
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri());
     $out_file = $archival_path . '.ogg';
 
     $theora_executable = \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg2theora_path');
@@ -122,7 +122,7 @@ function islandora_video_create_mkv(AbstractObject $object, $force = FALSE) {
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri());
     $out_file = $archival_path . '.mkv';
 
     $ffmpeg_executable = \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg_path');
@@ -168,7 +168,7 @@ function islandora_video_create_thumbnail(AbstractObject $object, $force = FALSE
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri());
     $out_file = $archival_path . '-TN.jpg';
     $ffmpeg_executable = \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg_path');
 
@@ -307,7 +307,6 @@ function islandora_video_copy_obj_datastream(AbstractObject $object) {
 
   // Create a file object we can save.
   $file_uri = file_create_filename("{$file_name}OBJ.{$ext}", 'temporary://');
-
   $image = File::create();
   $image->setFileUri($file_uri);
   $image->setFilename($file_name);
