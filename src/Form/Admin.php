@@ -4,7 +4,6 @@ namespace Drupal\islandora_video\Form;
 
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
-use Drupal\Core\Render\Element;
 use Drupal\Core\Link;
 use Drupal\Core\Url;
 
@@ -26,27 +25,18 @@ class Admin extends ConfigFormBase {
   public function submitForm(array &$form, FormStateInterface $form_state) {
     $config = $this->config('islandora_video.settings');
 
-    foreach (Element::children($form) as $variable) {
-      $config->set($variable, $form_state->getValue($form[$variable]['#parents']));
-    }
+    $config->set('islandora_video_make_thumbnail_locally', $form_state->getValue('islandora_video_make_thumbnail_locally'));
+    $config->set('islandora_video_ffmpeg_path', $form_state->getValue('islandora_video_ffmpeg_path'));
+    $config->set('islandora_video_make_archive', $form_state->getValue('islandora_video_make_archive'));
+    $config->set('islandora_video_make_mp4_locally', $form_state->getValue('islandora_video_make_mp4_locally'));
+    $config->set('islandora_video_make_ogg_locally', $form_state->getValue('islandora_video_make_ogg_locally'));
+    $config->set('islandora_video_ffmpeg2theora_path', $form_state->getValue('islandora_video_ffmpeg2theora_path'));
+    $config->set('islandora_video_mp4_audio_codec', $form_state->getValue('islandora_video_mp4_audio_codec'));
+    $config->set('islandora_video_play_obj', $form_state->getValue('islandora_video_play_obj'));
+    $config->set('islandora_video_max_obj_size', $form_state->getValue('islandora_video_max_obj_size'));
+
     $config->save();
-
-    $op = $form_state->get(['clicked_button', '#id']);
-    switch ($op) {
-      case 'edit-reset':
-        $this->config('islandora_video.settings')->clear('islandora_video_viewers')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_ffmpeg_path')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_make_archive')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_make_mp4_locally')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_make_ogg_locally')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_ffmpeg2theora_path')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_mp4_audio_codec')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_play_obj')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_max_obj_size')->save();
-        break;
-    }
-
-    parent::submitForm($form, $form_state);
+    islandora_set_viewer_info('islandora_video_viewers', $form_state->getValue('islandora_video_viewers'));
   }
 
   /**
@@ -65,17 +55,6 @@ class Admin extends ConfigFormBase {
     // Get viewer table.
     $viewer_table = islandora_viewers_form('islandora_video_viewers', 'video/mp4');
     $form += $viewer_table;
-
-    // Viewer stuff.
-    $form['actions'] = ['#type' => 'actions'];
-    $form['actions']['reset'] = [
-      '#type' => 'submit',
-      '#value' => $this->t('Reset to defaults'),
-      '#weight' => 1,
-      '#submit' => [
-        'islandora_video_admin_submit',
-      ],
-    ];
 
     // Playback options.
     $form['playback'] = [
@@ -178,22 +157,17 @@ class Admin extends ConfigFormBase {
         ],
       ],
     ];
-
-    return parent::buildForm($form, $form_state);
+    $form['submit'] = [
+      '#type' => 'submit',
+      '#value' => $this->t('Submit'),
+    ];
+    return $form;
   }
 
   /**
    * {@inheritdoc}
    */
   public function validateForm(array &$form, FormStateInterface $form_state) {
-    // Don't validate if resetting.
-    $op = $form_state->get([
-      'clicked_button',
-      '#id',
-    ]);
-    if ($op == 'edit-reset') {
-      return;
-    }
     // Ensure the mp4 audio codec is present if MP4 derivative is enabled.
     if ($form_state->getValue([
       'islandora_video_make_mp4_locally',

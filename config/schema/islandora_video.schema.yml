@@ -6,6 +6,8 @@ islandora_video.settings:
       type: string
     islandora_video_make_archive:
       type: boolean
+    islandora_video_make_thumbnail_locally:
+      type: boolean
     islandora_video_make_mp4_locally:
       type: boolean
     islandora_video_make_ogg_locally:
