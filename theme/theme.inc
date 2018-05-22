@@ -5,6 +5,10 @@
  * Theme hooks.
  */
 
+use Drupal\Core\Url;
+
+use Drupal\islandora\DublinCore;
+
 /**
  * Implements template_preprocess_HOOK().
  */
@@ -12,28 +16,9 @@ function template_preprocess_islandora_video(array &$variables) {
   module_load_include('inc', 'islandora', 'includes/datastream');
   module_load_include('inc', 'islandora', 'includes/utilities');
   module_load_include('inc', 'islandora', 'includes/solution_packs');
-  module_load_include('inc', 'islandora', 'includes/authtokens');
   module_load_include('inc', 'islandora', 'includes/metadata');
-  // @FIXME
-// The Assets API has totally changed. CSS, JavaScript, and libraries are now
-// attached directly to render arrays using the #attached property.
-//
-//
-// @see https://www.drupal.org/node/2169605
-// @see https://www.drupal.org/node/2408597
-// drupal_add_js('misc/form.js');
-
-  // @FIXME
-// The Assets API has totally changed. CSS, JavaScript, and libraries are now
-// attached directly to render arrays using the #attached property.
-//
-//
-// @see https://www.drupal.org/node/2169605
-// @see https://www.drupal.org/node/2408597
-// drupal_add_js('misc/collapse.js');
 
   $object = $variables['object'];
-  $repository = $object->repository;
   // We should eventually remove the DC object and dc_array code as it only
   // exists to not break legacy implementations.
   try {
@@ -73,22 +58,17 @@ function template_preprocess_islandora_video(array &$variables) {
   ];
   // Video player.
   if (isset($object[$viewer_dsid]) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object[$viewer_dsid])) {
-    // @FIXME
-// url() expects a route name or an external URI.
-// $video_url = url("islandora/object/{$object->id}/datastream/$viewer_dsid/view");
-
+    $video_url = Url::fromRoute('islandora.view_datastream_view', ['object' => $object->id, 'datastream' => $viewer_dsid]);
     $video_params += [
       'mime' => $mime,
-      'url' => $video_url,
+      'url' => $video_url->toString(),
     ];
   }
   // Thumbnail.
   if (isset($object['TN']) && islandora_datastream_access(ISLANDORA_VIEW_OBJECTS, $object['TN'])) {
-    // @FIXME
-// url() expects a route name or an external URI.
-// $video_params += array(
-//       'tn' => url("islandora/object/{$object->id}/datastream/TN/view", array('absolute' => TRUE)),
-//     );
+    $video_params += [
+      'tn' => Url::fromRoute('islandora.view_datastream_view', ['object' => $object->id, 'datastream' => 'TN'], ['absolute' => TRUE]),
+    ];
 
   }
 
@@ -100,5 +80,4 @@ function template_preprocess_islandora_video(array &$variables) {
   else {
     $variables['islandora_content'] = NULL;
   }
-  return ['' => $viewer];
 }
