@@ -5,6 +5,8 @@ namespace Drupal\islandora_video\Form;
 use Drupal\Core\Form\ConfigFormBase;
 use Drupal\Core\Form\FormStateInterface;
 use Drupal\Core\Render\Element;
+use Drupal\Core\Link;
+use Drupal\Core\Url;
 
 /**
  * Module settings form.
@@ -29,8 +31,19 @@ class Admin extends ConfigFormBase {
     }
     $config->save();
 
-    if (method_exists($this, '_submitForm')) {
-      $this->_submitForm($form, $form_state);
+    $op = $form_state->get(['clicked_button', '#id']);
+    switch ($op) {
+      case 'edit-reset':
+        $this->config('islandora_video.settings')->clear('islandora_video_viewers')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_ffmpeg_path')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_make_archive')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_make_mp4_locally')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_make_ogg_locally')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_ffmpeg2theora_path')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_mp4_audio_codec')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_play_obj')->save();
+        $this->config('islandora_video.settings')->clear('islandora_video_max_obj_size')->save();
+        break;
     }
 
     parent::submitForm($form, $form_state);
@@ -127,13 +140,13 @@ class Admin extends ConfigFormBase {
       '#type' => 'textfield',
       '#title' => $this->t('MP4 audio codec'),
       '#description' => $this->t("Defaults to libfaac, a non-free encoder. FFmpeg must have been compiled from source with that encoder enabled. See @FFMPEG for more info.", [
-        '@FFMPEG' => \Drupal::l($this->t("FFmpeg's AAC encoding guide"), \Drupal\Core\Url::fromUri('https://trac.ffmpeg.org/wiki/Encode/AAC'))
-        ]),
+        '@FFMPEG' => Link::fromTextAndUrl($this->t("FFmpeg's AAC encoding guide"), Url::fromUri('https://trac.ffmpeg.org/wiki/Encode/AAC'))->toString(),
+      ]),
       '#default_value' => $this->config('islandora_video.settings')->get('islandora_video_mp4_audio_codec'),
       '#states' => [
         'visible' => [
           ':input[name="islandora_video_make_mp4_locally"]' => [
-            'checked' => TRUE
+            'checked' => TRUE,
           ],
         ],
       ],
@@ -184,11 +197,11 @@ class Admin extends ConfigFormBase {
     // Ensure the mp4 audio codec is present if MP4 derivative is enabled.
     if ($form_state->getValue([
       'islandora_video_make_mp4_locally',
-      ]) == TRUE) {
+    ]) == TRUE) {
       // If no value is given, set the form to use and validate the default.
       $raw_value = $form_state->getValue([
         'islandora_video_mp4_audio_codec',
-        ]);
+      ]);
       $codec = strtolower(trim($raw_value));
       if (!$codec) {
         $codec = 'libfaac';
@@ -202,9 +215,9 @@ class Admin extends ConfigFormBase {
       // Test that FFMPEG path is valid.
       $ffmpeg = ($form_state->getValue([
         'islandora_video_ffmpeg_path',
-        ]) !== $this->config('islandora_video.settings')->get('islandora_video_ffmpeg_path') ? $form_state->getValue([
+      ]) !== $this->config('islandora_video.settings')->get('islandora_video_ffmpeg_path') ? $form_state->getValue([
         'islandora_video_ffmpeg_path',
-        ]) : $this->config('islandora_video.settings')->get('islandora_video_ffmpeg_path'));
+      ]) : $this->config('islandora_video.settings')->get('islandora_video_ffmpeg_path'));
       if (preg_match('/[^0-9a-zA-Z\\/\\\\_-]/', $ffmpeg) === 1) {
         $form_state->setErrorByName('islandora_video_ffmpeg_path', "The value entered for FFmpeg path contains forbidden characters.");
         return;
@@ -223,23 +236,6 @@ class Admin extends ConfigFormBase {
           $form_state->setErrorByName('islandora_video_mp4_audio_codec', 'The selected MP4 codec was not found in ffmpeg. Try using aac or enable the desired codec.');
         }
       }
-    }
-  }
-
-  public function _submitForm(array &$form, FormStateInterface $form_state) {
-    $op = $form_state->get(['clicked_button', '#id']);
-    switch ($op) {
-      case 'edit-reset':
-        $this->config('islandora_video.settings')->clear('islandora_video_viewers')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_ffmpeg_path')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_make_archive')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_make_mp4_locally')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_make_ogg_locally')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_ffmpeg2theora_path')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_mp4_audio_codec')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_play_obj')->save();
-        $this->config('islandora_video.settings')->clear('islandora_video_max_obj_size')->save();
-        break;
     }
   }
 
