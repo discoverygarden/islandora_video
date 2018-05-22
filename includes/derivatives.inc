@@ -6,6 +6,7 @@
  */
 
 use Drupal\Core\Logger\RfcLogLevel;
+use Drupal\file\Entity\File;
 
 use Drupal\islandora\MimeDetect;
 
@@ -28,7 +29,7 @@ function islandora_video_create_mp4(AbstractObject $object, $force = FALSE) {
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->uri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
     $out_file = $archival_path . '.mp4';
     $audio_codec = \Drupal::config('islandora_video.settings')->get('islandora_video_mp4_audio_codec');
 
@@ -36,7 +37,7 @@ function islandora_video_create_mp4(AbstractObject $object, $force = FALSE) {
     $command = "$ffmpeg_executable -i $archival_path -f mp4 -vcodec libx264 -preset medium -acodec $audio_codec -strict -2 -ab 128k -ac 2 -async 1 -movflags faststart $out_file";
     $return_value = FALSE;
     exec($command, $output, $return_value);
-    file_delete($archival_file['file']);
+    $archival_file['file']->delete();
     if ($return_value === 0) {
       return islandora_video_add_datastream($object, 'MP4', $out_file);
     }
@@ -75,14 +76,14 @@ function islandora_video_create_ogg(AbstractObject $object, $force = FALSE) {
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->uri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
     $out_file = $archival_path . '.ogg';
 
     $theora_executable = \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg2theora_path');
     $command = "$theora_executable $archival_path -o $out_file";
     $return_value = FALSE;
     exec($command, $output, $return_value);
-    file_delete($archival_file['file']);
+    $archival_file['file']->delete();
     if ($return_value === 0) {
       return islandora_video_add_datastream($object, 'OGG', $out_file);
     }
@@ -121,14 +122,14 @@ function islandora_video_create_mkv(AbstractObject $object, $force = FALSE) {
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->uri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
     $out_file = $archival_path . '.mkv';
 
     $ffmpeg_executable = \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg_path');
     $command = "$ffmpeg_executable -i $archival_path $out_file";
     $return_value = FALSE;
     exec($command, $output, $return_value);
-    file_delete($archival_file['file']);
+    $archival_file['file']->delete();
     if ($return_value === 0) {
       return islandora_video_add_datastream($object, 'MKV', $out_file);
     }
@@ -167,7 +168,7 @@ function islandora_video_create_thumbnail(AbstractObject $object, $force = FALSE
     if ($archival_file === FALSE) {
       return islandora_video_no_obj_datastream($object->id);
     }
-    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->uri);
+    $archival_path = \Drupal::service("file_system")->realpath($archival_file['file']->getFileUri);
     $out_file = $archival_path . '-TN.jpg';
     $ffmpeg_executable = \Drupal::config('islandora_video.settings')->get('islandora_video_ffmpeg_path');
 
@@ -195,7 +196,7 @@ function islandora_video_create_thumbnail(AbstractObject $object, $force = FALSE
 
       $return_value = FALSE;
       exec($tn_creation, $output, $return_value);
-      file_delete($archival_file['file']);
+      $archival_file['file']->delete();
       if ($return_value === 0) {
         return islandora_video_add_datastream($object, 'TN', $out_file);
       }
@@ -207,7 +208,7 @@ function islandora_video_create_thumbnail(AbstractObject $object, $force = FALSE
     }
     // Unable to grab duration at the default thunbnail.
     else {
-      file_delete($archival_file['file']);
+      $archival_file['file']->delete();
       $stored_thumbnail = drupal_get_path('module', 'islandora_video') . '/images/crystal_clear_app_camera.png';
       return islandora_video_add_datastream($object, 'TN', $stored_thumbnail, FALSE);
     }
@@ -306,16 +307,17 @@ function islandora_video_copy_obj_datastream(AbstractObject $object) {
 
   // Create a file object we can save.
   $file_uri = file_create_filename("{$file_name}OBJ.{$ext}", 'temporary://');
-  $file = new stdClass();
-  $file->uri = $file_uri;
-  $file->filename = $file_name;
-  $file->filemime = $object['OBJ']->mimeType;
-  // Temporary.
-  $file->status = 0;
+
+  $image = File::create();
+  $image->setFileUri($file_uri);
+  $image->setFilename($file_name);
+  $image->setOwnerId(\Drupal::currentUser()->id());
+  $image->setMimeType($object['OBJ']->mimeType);
   $object['OBJ']->getContent($file_uri);
-  $original_file = file_save($file);
+  $image->save();
+
   return [
-    'file' => $original_file,
+    'file' => $image,
     'extension' => $ext,
     'filename' => $file_name,
   ];
