@@ -6,34 +6,16 @@
  */
 
 /**
- * Implements hook_menu().
- */
-function islandora_video_menu() {
-  $items = array();
-  $items['admin/islandora/solution_pack_config/video'] = array(
-    'title' => 'Video Solution Pack',
-    'description' => 'Define ingest behavior and select video player.',
-    'page callback' => 'drupal_get_form',
-    'page arguments' => array('islandora_video_admin'),
-    'access arguments' => array('administer site configuration'),
-    'file' => 'includes/admin.form.inc',
-    'type' => MENU_NORMAL_ITEM,
-  );
-  return $items;
-}
-
-/**
  * Implements hook_theme().
  */
 function islandora_video_theme($existing, $type, $theme, $path) {
-  return array(
-    'islandora_video' => array(
-      'template' => 'theme/islandora-video',
+  return [
+    'islandora_video' => [
       'file' => 'theme/theme.inc',
       'pattern' => 'islandora_video__',
-      'variables' => array('object' => NULL),
-    ),
-  );
+      'variables' => ['object' => NULL],
+    ],
+  ];
 }
 
 /**
@@ -70,15 +52,15 @@ function islandora_video_islandora_required_objects(IslandoraTuque $connection) 
   $datastream->mimetype = 'image/png';
   $datastream->setContentFromFile("$module_path/images/folder.png", FALSE);
   $video_collection->ingestDatastream($datastream);
-  return array(
-    'islandora_video' => array(
+  return [
+    'islandora_video' => [
       'title' => 'Islandora Video',
-      'objects' => array(
+      'objects' => [
         $video_content_model,
         $video_collection,
-      ),
-    ),
-  );
+      ],
+    ],
+  ];
 }
 
 /**
@@ -86,100 +68,100 @@ function islandora_video_islandora_required_objects(IslandoraTuque $connection) 
  */
 function islandora_video_xml_form_builder_forms() {
   $module_path = drupal_get_path('module', 'islandora_video');
-  return array(
-    'Video MODS form' => array(
+  return [
+    'Video MODS form' => [
       'form_file' => "$module_path/xml/islandora_video_form_mods.xml",
-    ),
-  );
+    ],
+  ];
 }
 
 /**
  * Implements hook_xml_form_builder_form_associations().
  */
 function islandora_video_xml_form_builder_form_associations() {
-  return array(
-    'islandora_video_mods_form' => array(
+  return [
+    'islandora_video_mods_form' => [
       'content_model' => 'islandora:sp_videoCModel',
       'form_name' => 'Video MODS form',
       'dsid' => 'MODS',
-      'title_field' => array('titleInfo', 'title'),
+      'title_field' => ['titleInfo', 'title'],
       'transform' => 'mods_to_dc.xsl',
       'template' => FALSE,
-    ),
-  );
+    ],
+  ];
 }
 
 /**
  * Implements hook_CMODEL_PID_islandora_view_object().
  */
-function islandora_video_islandora_sp_videoCModel_islandora_view_object($object, $page_number, $page_size) {
-  $output = theme('islandora_video', array('object' => $object));
-  return array('' => $output);
+function islandora_video_islandora_sp_videocmodel_islandora_view_object($object, $page_number, $page_size) {
+  return [
+    '#theme' => 'islandora_video',
+    '#object' => $object,
+  ];
 }
 
 /**
  * Implements hook_islandora_ingest_steps().
  */
-function islandora_video_islandora_sp_videoCModel_islandora_ingest_steps() {
-  return array(
-    'islandora_video_upload' => array(
+function islandora_video_islandora_sp_videocmodel_islandora_ingest_steps() {
+  return [
+    'islandora_video_upload' => [
       'weight' => 10,
       'type' => 'form',
-      'form_id' => 'islandora_video_upload_form',
-      'module' => 'islandora_video',
-      'file' => 'includes/video_upload.form.inc',
-    ),
-  );
+      'form_class' => 'Drupal\islandora_video\Form\Upload',
+    ],
+  ];
 }
 
 /**
  * Implements hook_islandora_CMODEL_PID_derivative().
  */
-function islandora_video_islandora_sp_videoCModel_islandora_derivative() {
-  $derivatives = array();
-  if (variable_get('islandora_video_make_thumbnail_locally', TRUE)) {
-    $derivatives[] = array(
+function islandora_video_islandora_sp_videocmodel_islandora_derivative() {
+  $derivatives = [];
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_thumbnail_locally')) {
+    $derivatives[] = [
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'TN',
       'weight' => '0',
-      'function' => array(
+      'function' => [
         'islandora_video_create_thumbnail',
-      ),
+      ],
       'file' => drupal_get_path('module', 'islandora_video') . '/includes/derivatives.inc',
-    );
+    ];
   }
-  if (variable_get('islandora_video_make_mp4_locally', TRUE)) {
-    $derivatives[] = array(
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_mp4_locally')) {
+    $derivatives[] = [
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'MP4',
       'weight' => '1',
-      'function' => array(
+      'function' => [
         'islandora_video_create_mp4',
-      ),
+      ],
       'file' => drupal_get_path('module', 'islandora_video') . '/includes/derivatives.inc',
-    );
+    ];
   }
-  if (variable_get('islandora_video_make_ogg_locally', FALSE)) {
-    $derivatives[] = array(
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_ogg_locally')) {
+    $derivatives[] = [
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'OGG',
       'weight' => '2',
-      'function' => array(
+      'function' => [
         'islandora_video_create_ogg',
-      ),
+      ],
       'file' => drupal_get_path('module', 'islandora_video') . '/includes/derivatives.inc',
-    );
+    ];
   }
-  if (variable_get('islandora_video_make_archive', TRUE)) {
-    $derivatives[] = array(
+  if (\Drupal::config('islandora_video.settings')->get('islandora_video_make_archive')) {
+    $derivatives[] = [
       'source_dsid' => 'OBJ',
       'destination_dsid' => 'MKV',
       'weight' => '3',
-      'function' => array(
+      'function' => [
         'islandora_video_create_mkv',
-      ),
+      ],
       'file' => drupal_get_path('module', 'islandora_video') . '/includes/derivatives.inc',
-    );
+    ];
   }
   return $derivatives;
 }

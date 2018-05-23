@@ -1,0 +1,5 @@
+islandora_video.admin:
+  route_name: islandora_video.admin
+  parent: islandora.solution_packs_admin
+  title: 'Video Solution Pack'
+  description: 'Define ingest behavior and select video player.'

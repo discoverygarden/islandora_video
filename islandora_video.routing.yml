@@ -1,0 +1,7 @@
+islandora_video.admin:
+  path: '/admin/config/islandora/solution_pack_config/video'
+  defaults:
+    _title: 'Video Solution Pack'
+    _form: '\Drupal\islandora_video\Form\Admin'
+  requirements:
+    _permission: 'administer site configuration'
