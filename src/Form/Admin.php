@@ -50,7 +50,7 @@ class Admin extends ConfigFormBase {
    * {@inheritdoc}
    */
   public function buildForm(array $form, FormStateInterface $form_state) {
-    module_load_include('inc', 'islandora', 'includes/solution_packs');
+    $form_state->loadInclude('islandora', 'inc', 'includes/solution_packs');
     $form = [];
     // Get viewer table.
     $viewer_table = islandora_viewers_form('islandora_video_viewers', 'video/mp4');
