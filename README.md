@@ -5,8 +5,8 @@
 A framework for ingesting and retrieving video objects in Islandora. Currently
 supports videos with the following extensions: `mp4`, `mov`, `qt`, `m4v`,
 `avi`, `mkv`, `ogg`. A viewer module, such as [Islandora
-Video.js](https://github.com/discoverygarden/islandora_videojs), may be enabled to
-play compatible videos.
+Video.js](https://github.com/discoverygarden/islandora_videojs), may be enabled
+to play compatible videos.
 
 ## Requirements
 
