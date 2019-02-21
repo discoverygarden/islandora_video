@@ -1,5 +1,5 @@
 islandora_video.settings:
-  type: mapping
+  type: config_object
   label: Settings
   mapping:
     islandora_video_ffmpeg_path:
