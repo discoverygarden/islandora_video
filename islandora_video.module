@@ -82,6 +82,7 @@ function islandora_video_xml_form_builder_form_associations() {
   return [
     'islandora_video_mods_form' => [
       'content_model' => 'islandora:sp_videoCModel',
+      'self_transform' => 'islandora_cleanup_mods_extended.xsl',
       'form_name' => 'Video MODS form',
       'dsid' => 'MODS',
       'title_field' => ['titleInfo', 'title'],
