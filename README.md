@@ -20,8 +20,7 @@ This module requires the following modules/libraries:
 ### Installing FFmpeg and AAC Encoders
 
 FFmpeg is a command-line video-processing library, required to create TN, MP4,
-and MKV derivatives. This module has been tested with:
-* FFmpeg 3.4.4
+and MKV derivatives. This module has been tested with FFmpeg 3.4.4.
 
 To support the creation of MP4 files, FFmpeg needs an AAC encoder. For legacy
 reasons, this module defaults to `libfaac`, but keeping this default is **not
