@@ -1,5 +1,5 @@
 name: 'Islandora Video Solution Pack'
-description: 'A default Islandora module to handle video'
+description: 'A default Islandora module to handle video.'
 dependencies:
   - :islandora
 package: 'Islandora Solution Packs'
