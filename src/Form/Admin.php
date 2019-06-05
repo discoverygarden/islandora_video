@@ -147,7 +147,7 @@ class Admin extends ConfigFormBase {
     $form['derivatives']['islandora_video_ffmpeg2theora_path'] = [
       '#type' => 'textfield',
       '#title' => $this->t('Path to ffmpeg2theora executable'),
-      '#description' => $this->t('Path to Theora conversion program on your server'),
+      '#description' => $this->t('Path to Theora conversion program on your server.'),
       '#default_value' => $this->config('islandora_video.settings')->get('islandora_video_ffmpeg2theora_path'),
       '#states' => [
         'visible' => [
